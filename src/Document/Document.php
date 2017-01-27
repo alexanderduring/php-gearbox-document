@@ -16,34 +16,68 @@ class Document
 
 
     /**
+     * Returns true if a field exists in the document.
+     *
+     * @param array $keys
+     * @return boolean
+     */
+    public function has($keys)
+    {
+        $level = &$this->data;
+        $lastKey = array_pop($keys);
+        $hasField = true;
+
+        foreach ($keys as $key) {
+            if (array_key_exists($key, $level)) {
+                if (!is_array($level[$key])) {
+                    $hasField = false;
+                    break;
+                }
+                $level = &$level[$key];
+            } else {
+                $hasField = false;
+                break;
+            }
+        }
+
+        if ($hasField && !array_key_exists($lastKey, $level)) {
+            $hasField = false;
+        }
+
+        return $hasField;
+    }
+
+
+
+    /**
      * Unsets a field in the document, if it exists.
      *
      * @param array $keys
      * @return boolean
      */
-    protected function delete($keys)
+    public function delete($keys)
     {
         $level = &$this->data;
-        $lastKey = array_pop($keys);
-        $success = true;
+        $keyNotFound = false;
 
         foreach ($keys as $key) {
-            if (array_key_exists($key, $level)) {
-                if (!is_array($level[$key])) {
-                    $success = false;
-                    break;
-                }
+            if (is_array($level) && array_key_exists($key, $level)) {
                 $level = &$level[$key];
             } else {
-                $success = false;
+                $keyNotFound = true;
                 break;
             }
         }
 
-        if ($success) {
-            unset($level[$lastKey]);
+        if (!$keyNotFound) {
+            unset($level);
         }
+    }
 
-        return $success;
+
+
+    public function toArray()
+    {
+        return $this->data;
     }
 }
