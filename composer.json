@@ -1,0 +1,23 @@
+{
+    "name": "alexanderduring/gearbox/document",
+    "type": "library",
+    "description": "",
+    "keywords": [],
+    "license": "GNU General Public License v3.0",
+    "homepage": "https://github.com/alexanderduring/php-gearbox-document",
+    "authors": [
+        {
+            "name": "Alexander During",
+            "role": "Developer"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Gearbox\\": "src/"
+        }
+    },
+    "require": {
+        "php": ">=5.4.45",
+        "phpunit/phpunit": "5.7.*"
+    }
+}
