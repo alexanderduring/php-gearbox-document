@@ -57,20 +57,24 @@ class Document
      */
     public function delete($keys)
     {
-        $level = &$this->data;
-        $keyNotFound = false;
+        if (is_array($keys) && count($keys) > 0) {
 
-        foreach ($keys as $key) {
-            if (is_array($level) && array_key_exists($key, $level)) {
-                $level = &$level[$key];
-            } else {
-                $keyNotFound = true;
-                break;
+            $level = &$this->data;
+            $keyNotFound = false;
+            $lastKey = array_pop($keys);
+
+            foreach ($keys as $key) {
+                if (is_array($level) && array_key_exists($key, $level)) {
+                    $level = &$level[$key];
+                } else {
+                    $keyNotFound = true;
+                    break;
+                }
             }
-        }
 
-        if (!$keyNotFound) {
-            unset($level);
+            if (!$keyNotFound && is_array($level) && array_key_exists($lastKey, $level)) {
+                unset($level[$lastKey]);
+            }
         }
     }
 

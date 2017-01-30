@@ -15,14 +15,83 @@ class DocumentTest extends TestCase
         $defaultExpectations = [];
 
         $testCases = [
-            'Delete field from empty array' => [
+            'PC: Try to delete without keys from empty array' => [
+                'preconditions' => [
+                    'sourceArray' => [],
+                    'deleteField' => null
+                ],
+                'expectations' => [
+                    'targetArray' => []
+                ]
+            ],
+            'PC: Try to delete without keys from array' => [
+                'preconditions' => [
+                    'sourceArray' => [
+                        'test' => 'data'
+                    ],
+                    'deleteField' => null
+                ],
+                'expectations' => [
+                    'targetArray' => [
+                        'test' => 'data'
+                    ]
+                ]
+            ],
+            'PC: Try to delete field from empty array' => [
                 'preconditions' => [
                     'sourceArray' => []
                 ],
                 'expectations' => [
                     'targetArray' => []
                 ]
-            ]
+            ],
+            'PC: Try to delete missing field from array' => [
+                'preconditions' => [
+                    'sourceArray' => [
+                        'foo' => 'bar'
+                    ]
+                ],
+                'expectations' => [
+                    'targetArray' => [
+                        'foo' => 'bar'
+                    ]
+                ]
+            ],
+            'PC: Delete field from array' => [
+                'preconditions' => [
+                    'sourceArray' => [
+                        'foo' => 'bar',
+                        'not-needed' => 'baz'
+                    ]
+                ],
+                'expectations' => [
+                    'targetArray' => [
+                        'foo' => 'bar'
+                    ]
+                ]
+            ],
+            'PC: Delete deep field from array' => [
+                'preconditions' => [
+                    'sourceArray' => [
+                        'foo' => [
+                            'bar' => [
+                                'baz' => 'test',
+                                'not-needed' => 'empty'
+                            ]
+                        ]
+                    ],
+                    'deleteField' => ['foo', 'bar', 'not-needed']
+                ],
+                'expectations' => [
+                    'targetArray' => [
+                        'foo' => [
+                            'bar' => [
+                                'baz' => 'test'
+                            ]
+                        ]
+                    ]
+                ]
+            ],
         ];
 
         // Merge test data with default data
