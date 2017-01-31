@@ -6,6 +6,111 @@ use PHPUnit\Framework\TestCase;
 
 class DocumentTest extends TestCase
 {
+    public function hasProvider()
+    {
+        $defaultPreconditions = [];
+
+        $defaultExpectations = [
+            'found' => true
+        ];
+
+        $testCases = [
+            'PC: Try to find without a field in empty array' => [
+                'preconditions' => [
+                    'sourceArray' => [],
+                    'field' => null
+                ],
+                'expectations' => [
+                    'found' => false
+                ]
+            ],
+            'PC: Try to find without a field in array' => [
+                'preconditions' => [
+                    'sourceArray' => [
+                        'test' => 'data'
+                    ],
+                    'field' => null
+                ],
+                'expectations' => [
+                    'found' => false
+                ]
+            ],
+            'PC: Try to find field in empty array' => [
+                'preconditions' => [
+                    'sourceArray' => [],
+                    'field' => ['hidden', 'gold']
+                ],
+                'expectations' => [
+                    'found' => false
+                ]
+            ],
+            'PC: Try to find missing field in array' => [
+                'preconditions' => [
+                    'sourceArray' => [
+                        'foo' => 'bar'
+                    ],
+                    'field' => ['hidden', 'gold']
+                ],
+                'expectations' => [
+                    'found' => false
+                ]
+            ],
+            'PC: Find existing field in array' => [
+                'preconditions' => [
+                    'sourceArray' => [
+                        'foo' => 'bar',
+                        'hidden' => [
+                            'gold' => 'here'
+                        ]
+                    ],
+                    'field' => ['hidden', 'gold']
+                ],
+                'expectations' => [
+                    'found' => true
+                ]
+            ],
+            'PC: Delete deep field from array' => [
+                'preconditions' => [
+                    'sourceArray' => [
+                        'deeply' => [
+                            'hidden' => [
+                                'stuff' => 'forgotten',
+                                'gold' => 'stolen'
+                            ]
+                        ]
+                    ],
+                    'field' => ['deeply', 'hidden', 'gold']
+                ],
+                'expectations' => [
+                    'found' => true
+                ]
+            ],
+        ];
+
+        // Merge test data with default data
+        foreach ($testCases as &$testCase) {
+            $testCase['preconditions'] = array_merge($defaultPreconditions, $testCase['preconditions']);
+            $testCase['expectations'] = array_merge($defaultExpectations, $testCase['expectations']);
+        }
+
+        return $testCases;
+    }
+
+
+
+    /**
+     * @dataProvider hasProvider
+     */
+    public function testHas($preconditions, $expectations)
+    {
+        $document = new Document($preconditions['sourceArray']);
+        $hasField = $document->has($preconditions['field']);
+
+        $this->assertSame($expectations['found'], $hasField, 'The result of has is not correct.');
+    }
+
+
+
     public function deleteProvider()
     {
         $defaultPreconditions = [

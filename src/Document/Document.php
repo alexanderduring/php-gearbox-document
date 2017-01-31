@@ -23,24 +23,28 @@ class Document
      */
     public function has($keys)
     {
-        $level = &$this->data;
-        $lastKey = array_pop($keys);
-        $hasField = true;
+        if (is_array($keys) && count($keys) > 0) {
+            $level = &$this->data;
+            $lastKey = array_pop($keys);
+            $hasField = true;
 
-        foreach ($keys as $key) {
-            if (array_key_exists($key, $level)) {
-                if (!is_array($level[$key])) {
+            foreach ($keys as $key) {
+                if (array_key_exists($key, $level)) {
+                    if (!is_array($level[$key])) {
+                        $hasField = false;
+                        break;
+                    }
+                    $level = &$level[$key];
+                } else {
                     $hasField = false;
                     break;
                 }
-                $level = &$level[$key];
-            } else {
-                $hasField = false;
-                break;
             }
-        }
 
-        if ($hasField && !array_key_exists($lastKey, $level)) {
+            if ($hasField && !array_key_exists($lastKey, $level)) {
+                $hasField = false;
+            }
+        } else {
             $hasField = false;
         }
 
